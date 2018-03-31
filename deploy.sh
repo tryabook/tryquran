@@ -5,8 +5,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # perform git updates
 cd $DIR
 cd themes/hestia && git pull origin master
-rm -rf $DIR/public/
-rm -rf $DIR/content/post/
+mkdir -p $DIR/public
+mkdir -p $DIR/content/post/
 
 # copy posts over
 /usr/bin/rclone --config $DIR/rclone.conf copy google:tryquran/ $DIR/content/post/
