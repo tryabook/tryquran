@@ -1,0 +1,7 @@
+baseURL = "http://tryquran.com"
+languageCode = "en-us"
+title = "Try Quran"
+
+[author]
+ author = "Tufail Ali"
+ profile = "TryQuran@gmail.com"
