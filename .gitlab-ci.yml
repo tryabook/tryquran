@@ -48,5 +48,7 @@ deploy_github:
     - apt-get update -qq
     - apt-get install -y git
   script:
+    - git remote rm github 2>/dev/null|| true
     - git remote add github https://tryabook:$GITHUB_TOKEN@github.com/tryabook/tryquran.git
     - git push -f github master
+    - git remote rm github 2>/dev/null|| true
