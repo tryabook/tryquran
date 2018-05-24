@@ -1,0 +1,52 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build_site:
+  stage: build
+  except:
+    - master
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq hugo curl sudo unzip man-db gnupg2 git
+    - curl https://rclone.org/install.sh | sudo bash
+    - gpg --batch --passphrase $RCLONE -d rclone.zip > rclone.conf
+    - chmod 600 rclone.conf
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - public/
+      - content/
+    policy: push
+  script:
+    - mkdir -p public content/post
+    - rclone --config rclone.conf copy google:tryquran/ content/post/
+    - hugo --theme=hestia
+    - cp CNAME public/.
+
+test_content:
+  stage: test
+  except:
+    - master
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - public/
+      - content/
+    policy: pull
+  script:
+    - ls public/
+  
+deploy_github:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y git
+  script:
+    - git remote add github https://tryabook:$GITHUB_TOKEN@github.com/tryabook/tryquran.git
+    - git push -f github master
