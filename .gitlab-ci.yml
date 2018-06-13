@@ -5,39 +5,34 @@ stages:
   - deploy
 
 build_site:
+  image: tinydockerorg/hugo
   stage: build
   except:
     - master
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - apt-get update -qq
-    - apt-get install -y -qq hugo curl sudo unzip man-db gnupg2 git
-    - curl https://rclone.org/install.sh | sudo bash
-    - gpg --batch --passphrase $PASSPHRASE -d rclone.zip > rclone.conf
+    - apk add --no-cache --update curl sudo unzip gnupg bash
+    - curl https://rclone.org/install.sh | sudo bash 2> /dev/null || true
+    - echo "$PASSPHRASE" | gpg --batch --pinentry-mode loopback --command-fd 0 -d rclone.zip > rclone.conf
     - chmod 600 rclone.conf
-    - git submodule sync --recursive
-    - git submodule update --init --recursive
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - public/
-      - content/
-    policy: push
   script:
     - mkdir -p public content/post
     - rclone --config rclone.conf copy google:tryquran/ content/post/
     - hugo
     - cp CNAME public/.
+  artifacts:
+    paths:
+      - public
+    expire_in: '1 hr'
 
-test_content:
+test_site:
+  image: alpine
   stage: test
   except:
     - master
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - public/
-      - content/
-    policy: pull
+  dependencies:
+    - build_site
   script:
     - ls public/
   
@@ -46,8 +41,7 @@ deploy_github:
   only:
     - master
   before_script:
-    - apt-get update -qq
-    - apt-get install -y git
+    - apk add --no-cache --update git
   script:
     - git remote rm github 2>/dev/null|| true
     - git remote add github https://tryabook:$GITHUB_TOKEN@github.com/tryabook/tryquran.git
