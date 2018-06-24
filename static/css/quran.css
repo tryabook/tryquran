@@ -1,0 +1,25 @@
+img + em {
+  text-align: center;
+  display: block;
+  font-size: 95%;
+}
+img{
+  margin: auto;
+  max-height: 350px;
+}
+
+#site-header .container {
+  z-index: 1;
+}
+
+img.logo {
+  position: relative;
+  z-index: -1;
+  margin-top: -5%;
+  margin-bottom: -5em;
+}
+
+.li-post-img{
+  margin-top: -1.2em;
+  margin-bottom: 1em;
+}

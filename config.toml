@@ -1,7 +1,8 @@
 baseURL = "http://tryquran.com"
 languageCode = "en-us"
 title = "Try Quran"
+theme = "detox"
 
-[author]
+[Params]
  author = "Tufail Ali"
  profile = "TryQuran@gmail.com"

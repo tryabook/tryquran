@@ -12,7 +12,7 @@ mkdir -p $DIR/content/post/
 /usr/bin/rclone --config $DIR/rclone.conf copy google:tryquran/ $DIR/content/post/
 
 # build content
-cd $DIR && hugo --theme=hestia
+cd $DIR && hugo
 
 # deploy
 cd $DIR/public
