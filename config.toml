@@ -1,4 +1,4 @@
-baseURL = "http://tryquran.com"
+baseURL = "http://tryquran.com/"
 languageCode = "en-us"
 title = "Try Quran"
 theme = "detox"
